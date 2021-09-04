@@ -35,7 +35,8 @@ class League:
         return {'matchups': matchups, 'total_matchups': total_matchups}
 
     @staticmethod
-    def get_matchups_as_str_message(self, matchups, total_matchups) ->str:
+    def get_matchups_as_str_message(matchups, total_matchups) ->str:
+        """TODO: refactor this method"""
         final_message = ""
         for matchup_index in range(total_matchups):
             teams = matchups[f'{matchup_index}']['matchup']['0']['teams']
