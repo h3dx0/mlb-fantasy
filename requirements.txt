@@ -1,4 +1,5 @@
-social-auth-core==4.1.0
+#social-auth-core==4.1.0
+yahoo-oauth
 python-telegram-bot
 mlbgame
 MLB-StatsAPI
