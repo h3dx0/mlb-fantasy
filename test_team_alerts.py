@@ -1,5 +1,5 @@
 from team import Team
-from mlb_games import get_mlb_today_lineup_by_team
+from mlb_games import get_mlb_today_lineup_by_team_abbv
 
 
 def get_today_fantasy_roster_status():
@@ -26,7 +26,7 @@ def fantasy_players_status(fantasy_roster, mlb_rosters):
 def get_mlb_rosters_from_fantasy_roster(fantasy_teams):
     mlb_rosters = []
     for team in fantasy_teams:
-        today_lineup = get_mlb_today_lineup_by_team(team_abbv_name=team)
+        today_lineup = get_mlb_today_lineup_by_team_abbv(team_abbv_name=team)
         if len(today_lineup):
             mlb_rosters.append({'team': team, 'lineup': today_lineup})
     return mlb_rosters
