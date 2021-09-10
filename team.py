@@ -40,17 +40,26 @@ class Team:
         return players_info_str
 
     def create_single_player_info_str(self, player_full_data: dict) -> str:
-        player_positions, player_name, player_team = self.get_player_info(player_full_info=player_full_data)
-        return f'{player_positions} - {player_name} - {player_team}\n'
+        player = self.get_player_info(player_full_info=player_full_data)
+        return f'{player["position"]} - {player["name"]} - {player["team"]}\n'
+
+    def get_today_players_info(self):
+        roster_data = self.get_today_roster()
+        roster_players, roster_players_count = self.get_roster_info(roster_data=roster_data)
+        today_players = []
+        for player_index in range(roster_players_count):
+            player_full_data = roster_players[f'{player_index}']['player']
+            today_players.append(self.get_player_info(player_full_info=player_full_data))
+        return today_players
 
     @staticmethod
-    def get_player_info(player_full_info: dict) -> tuple:
+    def get_player_info(player_full_info: dict) -> dict:
         player_info = player_full_info[0]
         postition_info = player_full_info[1]['selected_position']
         player_name = player_info[2]['name']['full']
         player_team = player_info[6]['editorial_team_abbr'] if 'editorial_team_abbr' in player_info[6] else "IL"
         player_positions = postition_info[1]['position'] if 'position' in postition_info[1] else "IL"
-        return player_positions, player_name, player_team
+        return {'position': player_positions, 'name': player_name, 'team': player_team}
 
     @staticmethod
     def get_roster_info(roster_data: dict):
@@ -60,5 +69,9 @@ class Team:
         players_count = roster_players['count']
         return roster_players, players_count
 
-#team = Team(team_id='404.l.79962.t.3')
-#print(team.get_roster_as_str_message())
+    def get_mlb_teams_abbv_from_roster(self, roster) -> list:
+        teams = [player['team'] for player in roster if player['team'] != 'IL']
+        return list(set(teams))
+
+# team = Team(team_id='404.l.79962.t.3')
+# print(team.get_roster_as_str_message())

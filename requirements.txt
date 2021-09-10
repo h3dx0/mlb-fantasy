@@ -1,3 +1,4 @@
 social-auth-core==4.1.0
- python-telegram-bot
- mlbgame
+python-telegram-bot
+mlbgame
+MLB-StatsAPI

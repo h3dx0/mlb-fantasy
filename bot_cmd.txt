@@ -1,0 +1,4 @@
+start - Welcome
+matchups - Matchups status
+team - Team general info
+roster_status - Roster lineup from today MLB lineups
