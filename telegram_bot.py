@@ -5,7 +5,7 @@ import datetime
 import logging
 from config import LEAGUE_ID
 from league import League
-from team import Team
+from fantasy_team import FantasyTeam
 from test_team_alerts import get_today_fantasy_roster_status
 
 updater = Updater(token='1998454464:AAFDiMUoQTEPuer4P-gjvlNH4oHOeJcDhbc')
@@ -35,7 +35,7 @@ def matchups_info(update: Update, context: CallbackContext) -> None:
 
 def get_team_info(update: Update, context: CallbackContext):
     print("--GET TEAM INFO ----")
-    team = Team(team_id='404.l.79962.t.3')
+    team = FantasyTeam(team_id='404.l.79962.t.3')
     message = f'Team for today : {datetime.datetime.today().date()}\n {team.get_roster_as_str_message()}'
     update.message.reply_text(message)
 

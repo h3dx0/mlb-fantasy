@@ -1,4 +1,3 @@
-import mlbgame
 import datetime
 import statsapi
 import requests
@@ -63,6 +62,16 @@ def get_lineups_from_mlbgame(game):
         return home_lineups, away_lineups
     except Exception:
         raise LineUpFoundException(f"No lineups for {game['game_id']}")
+
+
+def get_mlb_rosters_by_teams_abbv(mlb_teams_abbv):
+    mlb_rosters = []
+    for team in mlb_teams_abbv:
+        today_lineup = get_mlb_today_lineup_by_team_abbv(team_abbv_name=team)
+        if len(today_lineup):
+            mlb_rosters.append({'team': team, 'lineup': today_lineup})
+    return mlb_rosters
+
 
 
 class LineUpFoundException(Exception):

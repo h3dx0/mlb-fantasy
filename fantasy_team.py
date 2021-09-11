@@ -1,15 +1,15 @@
 import datetime
 import json
-
 from oauth import get_oauth_session
 from config import YAHOO_ENDPOINT
 
 
-class Team:
+class FantasyTeam:
     def __init__(self, team_id):
         self.url = 'team'
         self.team_id = team_id
         self.oauth = get_oauth_session()
+        self.roster = self._get_today_roster()
 
     def get_team_info(self):
         response = self.oauth.session.get(
@@ -18,7 +18,7 @@ class Team:
             raise RuntimeError(response.content)
         return response.json()
 
-    def get_today_roster(self):
+    def _get_today_roster(self) -> dict:
         today = datetime.datetime.today().date()
         response = self.oauth.session.get(
             f'{YAHOO_ENDPOINT}/{self.url}/{self.team_id}/roster;date={today}', params={'format': 'json'})
@@ -27,8 +27,7 @@ class Team:
         return response.json()
 
     def get_roster_as_str_message(self) -> str:
-        roster_data = self.get_today_roster()
-        roster_players, roster_players_count = self.get_roster_info(roster_data=roster_data)
+        roster_players, roster_players_count = self.get_roster_info(roster_data=self.roster)
         players_as_str = self.get_players_info_str(roster_players=roster_players, players_count=roster_players_count)
         return players_as_str
 
@@ -43,9 +42,8 @@ class Team:
         player = self.get_player_info(player_full_info=player_full_data)
         return f'{player["position"]} - {player["name"]} - {player["team"]}\n'
 
-    def get_today_players_info(self):
-        roster_data = self.get_today_roster()
-        roster_players, roster_players_count = self.get_roster_info(roster_data=roster_data)
+    def get_today_players_info(self) -> list:
+        roster_players, roster_players_count = self.get_roster_info(roster_data=self.roster)
         today_players = []
         for player_index in range(roster_players_count):
             player_full_data = roster_players[f'{player_index}']['player']
@@ -72,6 +70,18 @@ class Team:
     def get_mlb_teams_abbv_from_roster(self, roster) -> list:
         teams = [player['team'] for player in roster if player['team'] != 'IL']
         return list(set(teams))
+
+    @staticmethod
+    def fantasy_players_status(fantasy_roster, mlb_rosters) -> list:
+        players_lineup = []
+        for player in fantasy_roster:
+            player['in_lineup'] = True
+            for mlb_roster in mlb_rosters:
+                if player['team'] == mlb_roster['team']:
+                    if player['name'] not in mlb_roster['lineup']:
+                        player['in_lineup'] = False
+                    players_lineup.append(player)
+        return players_lineup
 
 # team = Team(team_id='404.l.79962.t.3')
 # print(team.get_roster_as_str_message())
